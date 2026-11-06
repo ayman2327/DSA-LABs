@@ -1,0 +1,187 @@
+#include <iostream>
+#include <vector>
+#include <string>
+#include <algorithm>
+using namespace std;
+
+// Abstract base class
+class LibraryItem {
+public:
+    virtual void display() const = 0;
+    virtual ~LibraryItem() {}
+};
+
+// Book class
+class Book : public LibraryItem {
+private:
+    string title;
+    string author;
+    int pages;
+
+public:
+    Book(string t, string a, int p) {
+        title = t;
+        author = a;
+        pages = p;
+    }
+
+    string getTitle() const {
+        return title;
+    }
+
+    int getPages() const {
+        return pages;
+    }
+
+    void display() const override {
+        cout << "Book: " << title
+             << ", Author: " << author
+             << ", Pages: " << pages << endl;
+    }
+};
+
+// Newspaper class
+class Newspaper : public LibraryItem {
+private:
+    string name;
+    string date;
+    string edition;
+
+public:
+    Newspaper(string n, string d, string e) {
+        name = n;
+        date = d;
+        edition = e;
+    }
+
+    string getName() const {
+        return name;
+    }
+
+    string getEdition() const {
+        return edition;
+    }
+
+    void display() const override {
+        cout << "Newspaper: " << name
+             << ", Date: " << date
+             << ", Edition: " << edition << endl;
+    }
+};
+
+class Library {
+private:
+    vector<Book> books;
+    vector<Newspaper> newspapers;
+
+public:
+    void addBook(const Book& book) {
+        books.push_back(book);
+    }
+
+    void addNewspaper(const Newspaper& newspaper) {
+        newspapers.push_back(newspaper);
+    }
+
+    void displayCollection() const {
+        cout << "\nBooks:\n";
+
+        for (const Book& book : books) {
+            book.display();
+        }
+
+        cout << "\nNewspapers:\n";
+
+        for (const Newspaper& newspaper : newspapers) {
+            newspaper.display();
+        }
+    }
+
+    void sortBooksByPages() {
+        sort(books.begin(), books.end(),
+             [](const Book& a, const Book& b) {
+                 return a.getPages() < b.getPages();
+             });
+    }
+
+    void sortNewspapersByEdition() {
+        sort(newspapers.begin(), newspapers.end(),
+             [](const Newspaper& a, const Newspaper& b) {
+                 return a.getEdition() < b.getEdition();
+             });
+    }
+
+    Book* searchBookByTitle(const string& title) {
+        for (Book& book : books) {
+            if (book.getTitle() == title) {
+                return &book;
+            }
+        }
+
+        return nullptr;
+    }
+
+    Newspaper* searchNewspaperByName(const string& name) {
+        for (Newspaper& newspaper : newspapers) {
+            if (newspaper.getName() == name) {
+                return &newspaper;
+            }
+        }
+
+        return nullptr;
+    }
+};
+
+int main() {
+    Book book1("The Catcher in the Rye",
+               "J.D. Salinger", 277);
+
+    Book book2("To Kill a Mockingbird",
+               "Harper Lee", 324);
+
+    Newspaper newspaper1("Washington Post",
+                         "2024-10-13", "Morning Edition");
+
+    Newspaper newspaper2("The Times",
+                         "2024-10-12", "Weekend Edition");
+
+    Library library;
+
+    library.addBook(book1);
+    library.addBook(book2);
+    library.addNewspaper(newspaper1);
+    library.addNewspaper(newspaper2);
+
+    cout << "Before Sorting:\n";
+    library.displayCollection();
+
+    library.sortBooksByPages();
+    library.sortNewspapersByEdition();
+
+    cout << "\nAfter Sorting:\n";
+    library.displayCollection();
+
+    // Search for a book by title
+    Book* foundBook =
+        library.searchBookByTitle("The Catcher in the Rye");
+
+    if (foundBook) {
+        cout << "\nFound Book:\n";
+        foundBook->display();
+    } else {
+        cout << "\nBook not found.\n";
+    }
+
+    // Search for a newspaper by name
+    Newspaper* foundNewspaper =
+        library.searchNewspaperByName("The Times");
+
+    if (foundNewspaper) {
+        cout << "\nFound Newspaper:\n";
+        foundNewspaper->display();
+    } else {
+        cout << "\nNewspaper not found.\n";
+    }
+
+    return 0;
+}
