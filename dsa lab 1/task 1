@@ -1,0 +1,49 @@
+#include <iostream>
+using namespace std;
+
+template <typename T>
+void selectionSort(T A[], int N)
+{
+    for (int I = 0; I < N - 1; I++)
+    {
+        int SmallSub = I;
+
+        for (int J = I + 1; J < N; J++)
+        {
+            if (A[J] < A[SmallSub])
+            {
+                SmallSub = J;
+            }
+        }
+
+        T temp = A[I];
+        A[I] = A[SmallSub];
+        A[SmallSub] = temp;
+    }
+}
+
+template <typename T>
+void printArray(T A[], int N)
+{
+    for (int I = 0; I < N; I++)
+    {
+        cout << A[I] << " ";
+    }
+    cout << endl;
+}
+
+int main()
+{
+    int A[] = { 64, 25, 12, 22, 11 };
+    int N = 5;
+
+    cout << "Original array: ";
+    printArray(A, N);
+
+    selectionSort(A, N);
+
+    cout << "Sorted array: ";
+    printArray(A, N);
+
+    return 0;
+}
